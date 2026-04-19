@@ -1,14 +1,17 @@
-import { App, debounce, Menu, MarkdownView, Plugin, PluginSettingTab, Setting } from 'obsidian';
+import { App, debounce, Menu, MarkdownView, Plugin, PluginSettingTab, Setting, DropdownComponent } from 'obsidian';
 import { highlightTextInElement, rules, markJiebaReady } from "./marker";
+import { t, Language } from "./i18n";
 
 export interface ReADHDSettings {
     readhdMode: boolean;
     readModeOnly: boolean;
+    language: Language;
 }
 
 const DEFAULT_SETTINGS: ReADHDSettings = {
     readhdMode: false,
     readModeOnly: true,
+    language: 'zh',
 };
 
 const toogleMode = (app: App) => {
@@ -68,8 +71,9 @@ export default class ReADHDPlugin extends Plugin {
         this.registerDomEvent(this.statusBarEl, "click", () => {
             const menu = new Menu();
 
+            const lang = this.settings.language;
             menu.addItem((item) => {
-                item.setTitle(this.settings.readhdMode ? "Disable reADHD" : "Enable reADHD");
+                item.setTitle(this.settings.readhdMode ? t('status.disable', lang) : t('status.enable', lang));
                 item.setIcon(this.settings.readhdMode ? "toggle-right" : "toggle-left");
                 item.onClick(async () => {
                     await this.toggle(() => {
@@ -146,14 +150,32 @@ class ReADHDSettingTab extends PluginSettingTab {
 
     display(): void {
         const {containerEl} = this;
+        const lang = this.plugin.settings.language;
 
         containerEl.empty();
 
-        containerEl.createEl('h2', {text: '📚 reADHD'});
+        containerEl.createEl('h2', {text: t('setting.header', lang)});
+
+        // Language selector
+        new Setting(containerEl)
+            .setName(t('setting.language.name', lang))
+            .setDesc(t('setting.language.desc', lang))
+            .addDropdown((dropdown: DropdownComponent) => {
+                dropdown
+                    .addOption('zh', t('setting.language.zh', lang))
+                    .addOption('en', t('setting.language.en', lang))
+                    .setValue(this.plugin.settings.language)
+                    .onChange(async (value) => {
+                        this.plugin.settings.language = value as Language;
+                        await this.plugin.saveSettings();
+                        // Refresh the settings tab to apply new language
+                        this.display();
+                    });
+            });
 
         new Setting(containerEl)
-            .setName('Toggle reADHD mode')
-            .setDesc('Toggle this to enable reADHD mode. You can also toggle this in status bar.')
+            .setName(t('setting.toggle.name', lang))
+            .setDesc(t('setting.toggle.desc', lang))
             .addToggle((toggle) =>
                 toggle.setValue(this.plugin.settings.readhdMode).onChange(async (value) => {
                     this.plugin.settings.readhdMode = value;
@@ -163,8 +185,8 @@ class ReADHDSettingTab extends PluginSettingTab {
                 }));
 
         new Setting(containerEl)
-            .setName('Only apply in reading mode')
-            .setDesc('When enabled, bionic reading effect only appears in reading mode. Live preview and source mode will not be affected.')
+            .setName(t('setting.readMode.name', lang))
+            .setDesc(t('setting.readMode.desc', lang))
             .addToggle((toggle) =>
                 toggle.setValue(this.plugin.settings.readModeOnly).onChange(async (value) => {
                     this.plugin.settings.readModeOnly = value;
@@ -173,7 +195,7 @@ class ReADHDSettingTab extends PluginSettingTab {
                 }));
 
         containerEl.createEl('p', {
-            text: 'Improved from Boninall\'s Obsidian-Better-Reading-Mode.',
+            text: t('footer.credit', lang),
             cls: 'setting-item-description'
         });
     }
