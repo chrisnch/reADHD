@@ -1,4 +1,5 @@
-import { App, debounce, Menu, MarkdownView, Plugin, PluginSettingTab, Setting, DropdownComponent } from 'obsidian';
+import { App, debounce, Menu, MarkdownView, Plugin, PluginSettingTab, Setting, DropdownComponent, normalizePath } from 'obsidian';
+import initJieba, { cut } from 'jieba-wasm/web';
 import { highlightTextInElement, rules, markJiebaReady } from "./marker";
 import { t, Language } from "./i18n";
 
@@ -30,9 +31,11 @@ export default class ReADHDPlugin extends Plugin {
         await this.loadSettings();
 
         try {
-            const jiebaWasm = require('jieba-wasm');
-            jiebaWasm.cut("测试", true);
-            markJiebaReady(jiebaWasm.cut);
+            const wasmPath = normalizePath(`${this.app.vault.configDir}/plugins/${this.manifest.id}/jieba_rs_wasm_bg.wasm`);
+            const wasmUrl = this.app.vault.adapter.getResourcePath(wasmPath);
+            await initJieba({ module_or_path: wasmUrl });
+            cut("测试", true);
+            markJiebaReady(cut);
             console.log("reADHD: jieba-wasm loaded successfully");
         } catch (err) {
             console.warn("reADHD: jieba-wasm init failed, falling back to Intl.Segmenter", err);
@@ -44,13 +47,11 @@ export default class ReADHDPlugin extends Plugin {
         this.addSettingTab(new ReADHDSettingTab(this.app, this));
         this.registerMarkdownPostProcessor((el, ctx) => {
             if (this.settings.readModeOnly) {
-                const file = this.app.vault.getAbstractFileByPath(ctx.sourcePath);
-                if (!file) return;
                 const leaves = this.app.workspace.getLeavesOfType("markdown");
                 let foundPreview = false;
                 for (const leaf of leaves) {
                     const view = leaf.view as MarkdownView;
-                    if (view && view.file === file && view.getMode() === 'preview') {
+                    if (view?.file?.path === ctx.sourcePath && view.getMode() === 'preview') {
                         foundPreview = true;
                         break;
                     }

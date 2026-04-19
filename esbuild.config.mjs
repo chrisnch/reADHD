@@ -1,4 +1,6 @@
 import esbuild from "esbuild";
+import fs from "fs";
+import path from "path";
 import process from "process";
 import builtins from 'builtin-modules'
 
@@ -10,6 +12,18 @@ if you want to view the source, please visit the github repository of this plugi
 `;
 
 const prod = (process.argv[2] === 'production');
+const wasmSource = path.resolve('node_modules/jieba-wasm/pkg/web/jieba_rs_wasm_bg.wasm');
+const wasmTarget = path.resolve('jieba_rs_wasm_bg.wasm');
+
+const copyJiebaWasm = {
+	name: 'copy-jieba-wasm',
+	setup(build) {
+		build.onEnd((result) => {
+			if (result.errors.length > 0) return;
+			fs.copyFileSync(wasmSource, wasmTarget);
+		});
+	},
+};
 
 esbuild.build({
 	banner: {
@@ -47,11 +61,12 @@ esbuild.build({
 		...builtins],
 	format: 'cjs',
 	platform: 'node',
-	mainFields: ['main', 'module'],
+	mainFields: ['browser', 'module', 'main'],
 	watch: !prod,
 	target: 'es2016',
 	logLevel: "info",
 	sourcemap: prod ? false : 'inline',
 	treeShaking: true,
 	outfile: 'main.js',
+	plugins: [copyJiebaWasm],
 }).catch(() => process.exit(1));
