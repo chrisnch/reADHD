@@ -57,6 +57,8 @@ export default class ReADHDPlugin extends Plugin {
                 }
                 if (!foundPreview) return;
             }
+            // Add a class to the container element so we can style everything inside it together
+            el.classList.add("readhd-container");
             highlightTextInElement({
                 app: this.app, element: el, rules, settings: this.settings
             });

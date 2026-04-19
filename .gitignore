@@ -4,3 +4,4 @@ node_modules/
 main.js
 jieba_rs_wasm_bg.wasm
 release/
+test/

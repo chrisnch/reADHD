@@ -13,7 +13,12 @@
     color: var(--text-muted);
 }
 
-/* Bionic reading highlight */
+/* reADHD global dimming (affects normal text and highlighted text equally) */
+.markdown-preview-view .readhd-container {
+    opacity: 0.87;
+}
+
+/* reADHD highlight */
 .theme-dark .markdown-preview-view span.readhd-highlight {
     font-weight: bold !important;
     filter: brightness(1.15);
