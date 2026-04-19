@@ -1,0 +1,25 @@
+/* reADHD plugin styles */
+
+/* Status bar */
+.readhd-statusbar-button {
+    cursor: pointer;
+}
+
+.readhd-statusbar-button.readhd-active {
+    color: var(--text-accent);
+}
+
+.readhd-statusbar-button.readhd-inactive {
+    color: var(--text-muted);
+}
+
+/* Bionic reading highlight */
+.theme-dark .markdown-preview-view span.readhd-highlight {
+    font-weight: bold !important;
+    filter: brightness(1.15);
+}
+
+.theme-light .markdown-preview-view span.readhd-highlight {
+    font-weight: bold !important;
+    filter: brightness(0.85);
+}

@@ -1,0 +1,45 @@
+{
+	"name": "reADHD",
+	"version": "0.1.0",
+	"description": "A bionic reading plugin for Obsidian with enhanced Chinese word segmentation. Improved from Boninall's Obsidian-Better-Reading-Mode.",
+	"main": "main.js",
+	"scripts": {
+		"dev": "node esbuild.config.mjs",
+		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
+		"bumpversion": "node version-bump.mjs && git add manifest.json versions.json"
+	},
+	"keywords": [
+		"Bionic reading",
+		"Obsidian",
+		"ADHD"
+	],
+	"author": "ab76",
+	"license": "MIT",
+	"devDependencies": {
+		"@codemirror/autocomplete": "^6.0.0",
+		"@codemirror/basic-setup": "^0.20.0",
+		"@codemirror/commands": "^6.0.0",
+		"@codemirror/lang-css": "^6.0.0",
+		"@codemirror/lang-html": "^6.0.0",
+		"@codemirror/language": "https://github.com/lishid/cm-language",
+		"@codemirror/lint": "^6.0.0",
+		"@codemirror/rangeset": "^0.19.1",
+		"@codemirror/search": "^6.0.0",
+		"@codemirror/state": "^6.0.0",
+		"@codemirror/stream-parser": "https://github.com/lishid/stream-parser",
+		"@codemirror/view": "^6.0.0",
+		"@types/node": "^16.11.6",
+		"@typescript-eslint/eslint-plugin": "^5.2.0",
+		"@typescript-eslint/parser": "^5.2.0",
+		"builtin-modules": "^3.2.0",
+		"codemirror": "^6.0.0",
+		"esbuild": "0.13.12",
+		"obsidian": "latest",
+		"regexp-match-indices": "^1.0.2",
+		"tslib": "2.4.0",
+		"typescript": "4.7.3"
+	},
+	"dependencies": {
+		"jieba-wasm": "^2.4.0"
+	}
+}
