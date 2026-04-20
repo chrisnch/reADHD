@@ -32,8 +32,8 @@ export default class ReADHDPlugin extends Plugin {
 
         try {
             const wasmPath = normalizePath(`${this.app.vault.configDir}/plugins/${this.manifest.id}/jieba_rs_wasm_bg.wasm`);
-            const wasmUrl = this.app.vault.adapter.getResourcePath(wasmPath);
-            await initJieba({ module_or_path: wasmUrl });
+            const wasmBytes = await this.app.vault.adapter.readBinary(wasmPath);
+            await initJieba({ module_or_path: wasmBytes });
             cut("测试", true);
             markJiebaReady(cut);
             console.log("reADHD: jieba-wasm loaded successfully");

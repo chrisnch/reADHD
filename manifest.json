@@ -1,7 +1,7 @@
 {
 	"id": "reADHD",
 	"name": "reADHD",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"minAppVersion": "0.15.2",
 	"description": "A visual emphasis reading plugin for Obsidian with enhanced Chinese word segmentation. Improved from Boninall's Obsidian-Better-Reading-Mode.",
 	"author": "ab76",
